@@ -74,6 +74,8 @@ script:
     tail /tmp/idempotency.log | grep -qP 'changed=0.*failed=0'
     && (echo "Idempotence: PASS"; exit 0)
     || (echo "Idempotence: FAIL"; cat /tmp/idempotency.log; exit 1)
+  - '[ "x${LXC_RELEASE}" == "xxenial" ] && sudo lxc-attach -n $LXC_NAME -- journalctl --catalog --all --full --no-pager || true'
+  - '[ "x${LXC_RELEASE}" == "x7" ] && sudo lxc-attach -n $LXC_NAME -- journalctl --catalog --all --full --no-pager || true'
 
 notifications:
   email: false
