@@ -22,8 +22,8 @@
     with_items: "{{ cuda_packages }}"
     register: cuda_packages_installation
     notify:
-     - ZZ CUDA Restart server
-     - ZZ CUDA Wait for server to restart
+     - CUDA Restart server
+     - CUDA Wait for server to restart
 
   - name: Template CUDA paths to user environments
     template:
@@ -32,15 +32,10 @@
       mode: 0755
     when: cuda_bash_profile
 
-  - include_tasks: cuda_init.yml
-    when: cuda_init == True
-
   # This is here because if we in the same playbook try to start slurmd without
-  # having run the cuda_init.sh script then slurmd doesn't start and the play fails.
+  # having run the init script then slurmd doesn't start and the play fails.
   # todo: reload nvidia modules/etc instead of restart
   - name: flush the handlers - so that the node is rebooted after CUDA is installed and that the GPUs are initialized before we start slurm
     meta: flush_handlers
-
-  when: gpu == True
 
 # vim:ft=ansible:
